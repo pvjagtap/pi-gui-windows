@@ -49,6 +49,12 @@ Build everything:
 pnpm build
 ```
 
+Package a Windows installer (outputs to `apps/desktop/release/`, which is gitignored):
+
+```bash
+pnpm --filter @pi-gui/desktop dist:win
+```
+
 Run the default test suite:
 
 ```bash
