@@ -22,8 +22,8 @@
   display: grid;
   grid-template-rows: auto 1fr;
   overflow: hidden;
-  background: #f6f7fa;
-  border-right: 1px solid #dde1ea;
+  background: #f3efe8;
+  border-right: 1px solid #ddd6ca;
 }
 
 .sidebar--collapsed {
@@ -78,8 +78,8 @@
 }
 
 .sidebar__nav-item--active {
-  background: #eef1f6;
-  border-color: #e1e5ee;
+  background: #ebe5db;
+  border-color: #ddd6ca;
   color: var(--text-strong);
 }
 
@@ -89,8 +89,8 @@
   min-height: 36px;
   padding: 8px 12px;
   border-radius: 10px;
-  background: #eef1f6;
-  border: 1px solid #e1e5ee;
+  background: #ebe5db;
+  border: 1px solid #ddd6ca;
   color: var(--text-strong);
   font-size: 14px;
   font-weight: 600;
@@ -132,7 +132,7 @@
 }
 
 .sidebar__toggle-button:hover {
-  background: #eef1f6;
+  background: #ebe5db;
 }
 
 .sidebar__toggle-button svg {
@@ -154,7 +154,7 @@
 }
 
 .sidebar__expand-button:hover {
-  background: #eef1f6;
+  background: #ebe5db;
 }
 
 .sidebar__expand-button svg {
@@ -360,9 +360,9 @@
   min-width: 160px;
   padding: 6px;
   border-radius: 14px;
-  border: 1px solid #d7dce8;
-  background: rgba(255, 255, 255, 0.96);
-  box-shadow: 0 22px 56px rgba(20, 27, 45, 0.18);
+  border: 1px solid #d0c8bb;
+  background: rgba(255, 253, 249, 0.96);
+  box-shadow: 0 22px 56px rgba(45, 43, 40, 0.18);
   display: grid;
   gap: 2px;
 }
@@ -377,7 +377,7 @@
 }
 
 .workspace-menu__item:hover {
-  background: rgba(243, 245, 250, 0.95);
+  background: rgba(240, 236, 228, 0.95);
 }
 
 .workspace-menu__item--danger {
@@ -390,8 +390,8 @@
   margin: 4px 0 2px 22px;
   padding: 10px 10px 11px;
   border-radius: 12px;
-  border: 1px solid #d8deea;
-  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid #d5cfc3;
+  background: rgba(255, 253, 249, 0.78);
 }
 
 .workspace-rename__input {
@@ -399,7 +399,7 @@
   min-height: 34px;
   padding: 7px 10px;
   border-radius: 10px;
-  border: 1px solid #d3d9e6;
+  border: 1px solid #d0c8bb;
   background: #fff;
   color: var(--text-strong);
   font-size: 14px;
@@ -407,8 +407,8 @@
 }
 
 .workspace-rename__input:focus {
-  border-color: rgba(84, 99, 220, 0.35);
-  box-shadow: 0 0 0 3px rgba(84, 99, 220, 0.08);
+  border-color: rgba(201, 100, 66, 0.35);
+  box-shadow: 0 0 0 3px rgba(201, 100, 66, 0.08);
 }
 
 .workspace-rename__actions {
@@ -422,16 +422,16 @@
   min-height: 30px;
   padding: 0 10px;
   border-radius: 9px;
-  border: 1px solid #d3d9e6;
-  background: #f8f9fd;
+  border: 1px solid #d0c8bb;
+  background: #f8f5f0;
   color: var(--muted-strong);
   font-size: 12px;
   font-weight: 560;
 }
 
 .workspace-rename__button--primary {
-  border-color: #4657cf;
-  background: #4657cf;
+  border-color: #c96442;
+  background: #c96442;
   color: #fff;
 }
 
@@ -455,10 +455,10 @@
 }
 
 .session-row--active {
-  background: #ffffff;
-  border-color: #d7dce8;
+  background: #faf7f2;
+  border-color: #d0c8bb;
   color: var(--text-strong);
-  box-shadow: 0 1px 2px rgba(20, 27, 45, 0.04);
+  box-shadow: 0 1px 2px rgba(45, 43, 40, 0.04);
 }
 
 .session-row__select {
@@ -494,9 +494,9 @@
   width: 11px;
   height: 11px;
   border-radius: 999px;
-  border: 2px solid #d6ddf3;
-  border-top-color: #697aff;
-  border-right-color: #697aff;
+  border: 2px solid #e5d9cc;
+  border-top-color: #c96442;
+  border-right-color: #c96442;
   animation: session-row-spin 900ms linear infinite;
 }
 
@@ -504,7 +504,7 @@
   width: 8px;
   height: 8px;
   border-radius: 999px;
-  background: #4657cf;
+  background: #c96442;
 }
 
 .session-row__body {
@@ -529,7 +529,7 @@
 
 .session-row__preview {
   font-size: 12px;
-  color: #8d95a8;
+  color: #8d8578;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -623,7 +623,7 @@
   gap: 6px;
   width: fit-content;
   border-radius: 999px;
-  color: #7f889c;
+  color: #7d7568;
   font-size: 11px;
   font-weight: 620;
   letter-spacing: 0.04em;
@@ -631,7 +631,7 @@
 }
 
 .archived-thread-group__toggle:hover {
-  background: rgba(255, 255, 255, 0.55);
+  background: rgba(255, 253, 249, 0.55);
 }
 
 .archived-thread-group__chevron {
@@ -651,7 +651,7 @@
 }
 
 .archived-thread-group__count {
-  color: #9ba3b4;
+  color: #a09888;
 }
 
 .session-list--archived {
@@ -659,7 +659,7 @@
 }
 
 .sidebar__footer {
-  border-top: 1px solid #dde2eb;
+  border-top: 1px solid #ddd6ca;
   background: rgba(255, 255, 255, 0.2);
 }
 

@@ -1,24 +1,24 @@
 :root {
   color-scheme: light;
-  --window: #eceef3;
-  --sidebar: #f4f5f8;
-  --main: #f8f8fb;
-  --surface: #ffffff;
-  --surface-muted: #f1f3f7;
-  --line: #dde1ea;
-  --line-strong: #d2d7e2;
-  --text: #39435b;
-  --text-strong: #1f2638;
-  --muted: #747d93;
-  --muted-strong: #556077;
-  --muted-soft: #8f97aa;
-  --muted-subtle: #a3a9b8;
-  --muted-icon: #8a92a8;
-  --muted-path: #a0a7b8;
-  --muted-settings: #8b92a4;
-  --accent: #6a55f2;
-  --error: #c45666;
-  --error-ink: #8f3040;
+  --window: #ece7df;
+  --sidebar: #f3efe8;
+  --main: #f8f5f0;
+  --surface: #fffdf9;
+  --surface-muted: #f0ece4;
+  --line: #ddd6ca;
+  --line-strong: #d0c8bb;
+  --text: #3d3832;
+  --text-strong: #2d2b28;
+  --muted: #7d7568;
+  --muted-strong: #5e574c;
+  --muted-soft: #948b7e;
+  --muted-subtle: #a8a092;
+  --muted-icon: #8e8577;
+  --muted-path: #a09888;
+  --muted-settings: #8a8275;
+  --accent: #c96442;
+  --error: #c45050;
+  --error-ink: #8f3030;
   --font-ui:
     ui-sans-serif,
     -apple-system,
@@ -150,7 +150,7 @@ svg {
   padding: 16px;
   border-radius: 12px;
   border: 1px dashed var(--line-strong);
-  background: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 253, 249, 0.45);
 }
 
 .empty-state h2 {
@@ -186,7 +186,7 @@ svg {
 }
 
 .button--ghost {
-  background: rgba(255, 255, 255, 0.55);
+  background: rgba(255, 253, 249, 0.55);
   border-color: var(--line);
 }
 
@@ -196,13 +196,13 @@ svg {
 }
 
 .button:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.62);
-  border-color: rgba(210, 215, 226, 0.85);
+  background: rgba(255, 253, 249, 0.62);
+  border-color: rgba(208, 200, 187, 0.85);
 }
 
 .button--primary:hover:not(:disabled) {
-  background: #31384d;
-  border-color: #31384d;
+  background: #3d3832;
+  border-color: #3d3832;
 }
 
 .button--cta-icon {
@@ -227,8 +227,8 @@ svg {
   font-size: 12px;
   font-weight: 500;
   color: var(--muted-strong);
-  background: rgba(255, 255, 255, 0.8);
-  border: 1px solid #d9deea;
+  background: rgba(255, 253, 249, 0.8);
+  border: 1px solid #d5cfc3;
 }
 
 .meta-chip--path {
