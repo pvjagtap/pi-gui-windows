@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { PiDesktopApi } from "./ipc";
+import type { TranscriptMessage } from "./desktop-state";
 import { InlineDiff } from "./diff-inline";
 import { RefreshIcon } from "./icons";
 
@@ -8,31 +9,78 @@ interface ChangedFile {
   readonly status: "added" | "modified" | "deleted" | "untracked";
 }
 
+/** Tool names that indicate a file write/edit operation. */
+const FILE_MUTATION_TOOLS = /^(write|edit|edit-diff|create|multiEdit|multi_edit|patch)$/i;
+
+function extractEditedFiles(transcript: readonly TranscriptMessage[]): readonly ChangedFile[] {
+  const seen = new Set<string>();
+  const result: ChangedFile[] = [];
+  for (const msg of transcript) {
+    if (msg.kind !== "tool" || msg.status === "running") continue;
+    if (!FILE_MUTATION_TOOLS.test(msg.toolName)) continue;
+    const input = msg.input as Record<string, unknown> | undefined;
+    const filePath =
+      typeof input?.path === "string" ? input.path :
+      typeof input?.filePath === "string" ? input.filePath :
+      typeof input?.file_path === "string" ? input.file_path :
+      undefined;
+    if (!filePath || seen.has(filePath)) continue;
+    seen.add(filePath);
+    result.push({ path: filePath, status: msg.status === "error" ? "modified" : "modified" });
+  }
+  return result;
+}
+
 interface DiffPanelProps {
   readonly workspaceId: string;
   readonly api: PiDesktopApi;
   readonly sessionStatus: string | undefined;
+  readonly transcript: readonly TranscriptMessage[];
 }
 
-export function DiffPanel({ workspaceId, api, sessionStatus }: DiffPanelProps) {
-  const [files, setFiles] = useState<readonly ChangedFile[]>([]);
+export function DiffPanel({ workspaceId, api, sessionStatus, transcript }: DiffPanelProps) {
+  const [gitFiles, setGitFiles] = useState<readonly ChangedFile[]>([]);
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
   const [diffText, setDiffText] = useState("");
   const [loading, setLoading] = useState(false);
+  const [hasGit, setHasGit] = useState(true);
+
+  // Derive edited files from session transcript (always available, even without git)
+  const sessionFiles = useMemo(() => extractEditedFiles(transcript), [transcript]);
+
+  // Merge: session-derived files first, then any additional git-only changes
+  const files = useMemo(() => {
+    const merged = [...sessionFiles];
+    const sessionPaths = new Set(sessionFiles.map((f) => f.path));
+    for (const gf of gitFiles) {
+      if (!sessionPaths.has(gf.path)) {
+        merged.push(gf);
+      }
+    }
+    return merged;
+  }, [sessionFiles, gitFiles]);
 
   const refresh = useCallback(() => {
     setLoading(true);
     void api.getChangedFiles(workspaceId).then((result) => {
-      setFiles(result);
+      setGitFiles(result);
+      setHasGit(true);
       setSelectedFile((current) => {
-        if (current && !result.some((f) => f.path === current)) {
+        const allPaths = new Set([
+          ...result.map((f) => f.path),
+          ...sessionFiles.map((f) => f.path),
+        ]);
+        if (current && !allPaths.has(current)) {
           return null;
         }
         return current;
       });
       setLoading(false);
+    }).catch(() => {
+      setHasGit(false);
+      setLoading(false);
     });
-  }, [api, workspaceId]);
+  }, [api, workspaceId, sessionFiles]);
 
   // Auto-refresh on mount and when session transitions from running to idle/failed
   const prevStatusRef = useRef(sessionStatus);
@@ -47,7 +95,7 @@ export function DiffPanel({ workspaceId, api, sessionStatus }: DiffPanelProps) {
   // Initial load
   useEffect(() => {
     refresh();
-  }, [workspaceId]);
+  }, [workspaceId, refresh]);
 
   // Fetch diff when file selected
   useEffect(() => {
@@ -55,7 +103,7 @@ export function DiffPanel({ workspaceId, api, sessionStatus }: DiffPanelProps) {
       setDiffText("");
       return;
     }
-    void api.getFileDiff(workspaceId, selectedFile).then(setDiffText);
+    void api.getFileDiff(workspaceId, selectedFile).then(setDiffText).catch(() => setDiffText(""));
   }, [api, workspaceId, selectedFile]);
 
   const handleStage = (filePath: string) => {
@@ -78,7 +126,9 @@ export function DiffPanel({ workspaceId, api, sessionStatus }: DiffPanelProps) {
       </div>
 
       {files.length === 0 ? (
-        <div className="diff-panel__empty">No changes</div>
+        <div className="diff-panel__empty">
+          {!hasGit ? "No git repository — edits will appear as the session runs" : "No changes"}
+        </div>
       ) : (
         <>
           <div className="diff-panel__file-list">
@@ -95,13 +145,15 @@ export function DiffPanel({ workspaceId, api, sessionStatus }: DiffPanelProps) {
                   <span className={`diff-panel__status-dot diff-panel__status-dot--${file.status}`} />
                   <span>{file.path}</span>
                 </button>
-                <button
-                  className="diff-panel__stage-btn"
-                  type="button"
-                  onClick={() => handleStage(file.path)}
-                >
-                  Stage
-                </button>
+                {hasGit ? (
+                  <button
+                    className="diff-panel__stage-btn"
+                    type="button"
+                    onClick={() => handleStage(file.path)}
+                  >
+                    Stage
+                  </button>
+                ) : null}
               </div>
             ))}
           </div>

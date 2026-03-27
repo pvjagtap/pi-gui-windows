@@ -15,14 +15,14 @@ export interface ChangedFileEntry {
 }
 
 export function getChangedFiles(workspacePath: string): Promise<ChangedFileEntry[]> {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     execFile(
       "git",
       ["status", "--porcelain"],
       { cwd: workspacePath, maxBuffer: 2 * 1024 * 1024 },
       (error, stdout) => {
         if (error) {
-          resolve([]);
+          reject(error);
           return;
         }
         const entries: ChangedFileEntry[] = [];

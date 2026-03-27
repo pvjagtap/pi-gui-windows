@@ -1014,6 +1014,7 @@ export default function App() {
             workspaceId={selectedWorkspace.id}
             api={api}
             sessionStatus={selectedSession?.status}
+            transcript={selectedSession?.transcript ?? []}
           />
         ) : null}
       </main>
