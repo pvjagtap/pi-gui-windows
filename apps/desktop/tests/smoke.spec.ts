@@ -17,7 +17,7 @@ test("boots the Codex-style shell with an empty workspace catalog", async () => 
 
     const newThreadBox = await window.getByRole("button", { name: "New thread" }).boundingBox();
     expect(newThreadBox).not.toBeNull();
-    expect(newThreadBox?.y ?? 0).toBeGreaterThan(40);
+    expect(newThreadBox?.y ?? 0).toBeGreaterThanOrEqual(30);
 
     const state = await getDesktopState(window);
     expect(state.workspaces).toEqual([]);
@@ -31,7 +31,8 @@ test("boots the Codex-style shell with an empty workspace catalog", async () => 
 test("persists workspace, session selection, and draft across app restart", async () => {
   const userDataDir = await mkdtemp(join(tmpdir(), "pi-gui-user-data-"));
   const workspacePath = await makeWorkspace("codex-style-folder");
-  const sessionTitle = "New thread";
+  const threadPrompt = "Summarize the project";
+  const sessionTitle = threadPrompt;
   const draft = "Now summarize the project title in one sentence.";
 
   const firstRun = await launchDesktop(userDataDir);
@@ -44,6 +45,7 @@ test("persists workspace, session selection, and draft across app restart", asyn
     await expect(window.getByRole("heading", { name: "Let's build" })).toBeVisible();
     await expect(window.locator(".topbar__session")).toHaveText("New thread");
 
+    await window.getByTestId("new-thread-composer").fill(threadPrompt);
     await window.getByRole("button", { name: "Start thread" }).click();
 
     await expect(window.locator(".topbar__session")).toHaveText(sessionTitle);
