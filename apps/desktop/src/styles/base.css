@@ -247,6 +247,12 @@ svg {
   background: rgba(255, 255, 255, 0.06);
 }
 
+:root.dark .button--primary {
+  background: var(--text-strong);
+  border-color: var(--text-strong);
+  color: #1f2638;
+}
+
 :root.dark .button:hover:not(:disabled) {
   background: rgba(255, 255, 255, 0.1);
   border-color: rgba(255, 255, 255, 0.12);
@@ -255,6 +261,7 @@ svg {
 :root.dark .button--primary:hover:not(:disabled) {
   background: #d4d4d8;
   border-color: #d4d4d8;
+  color: #1f2638;
 }
 
 :root.dark .meta-chip {
