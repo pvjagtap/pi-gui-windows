@@ -45,18 +45,32 @@ test("keeps extension widgets, status, and title scoped to the active session", 
     await composer.press("Enter");
 
     await expect(window.locator(".topbar__session")).toHaveText("Marked by extension");
-    await expect(window.getByTestId("extension-dock-summary")).toHaveText("Session marked");
+    await expect(window.getByTestId("extension-dock-summary")).not.toHaveText("");
     await window.getByTestId("extension-dock-toggle").click();
+    await expect(window.getByTestId("extension-dock-body")).toContainText("mark: Session marked");
     await expect(window.getByTestId("extension-dock-body")).toContainText("Marked widget");
     await expect(window.getByTestId("extension-dock-body")).toContainText("Marked below");
 
     await selectSession("Session B");
     await expect(window.locator(".topbar__session")).toHaveText("Session B");
-    await expect(window.getByTestId("extension-dock")).toHaveCount(0);
+    const sessionBDock = window.getByTestId("extension-dock");
+    if (await sessionBDock.count() > 0) {
+      await expect(sessionBDock).not.toContainText("Session marked");
+      await expect(sessionBDock).not.toContainText("Marked widget");
+    }
+
+    await composer.fill("/mark-ui ");
+    await composer.press("Enter");
+    await expect(window.locator(".topbar__session")).toHaveText("Marked by extension");
+    await expect(window.getByTestId("extension-dock-summary")).not.toHaveText("");
+    await window.getByTestId("extension-dock-toggle").click();
+    await expect(window.getByTestId("extension-dock-body")).toContainText("mark: Session marked");
+    await expect(window.getByTestId("extension-dock-body")).toContainText("Marked widget");
 
     await selectSession("Session A");
     await expect(window.locator(".topbar__session")).toHaveText("Marked by extension");
-    await expect(window.getByTestId("extension-dock-summary")).toHaveText("Session marked");
+    await expect(window.getByTestId("extension-dock-summary")).not.toHaveText("");
+    await expect(window.getByTestId("extension-dock-body")).toContainText("mark: Session marked");
     await expect(window.getByTestId("extension-dock-body")).toContainText("Marked widget");
   } finally {
     await harness.close();

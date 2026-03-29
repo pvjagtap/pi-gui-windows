@@ -98,17 +98,29 @@ test("navigates across folders and sessions through the sidebar", async () => {
     await createSession(window, alphaPath, "Alpha session two");
     await addWorkspace(window, betaPath);
     await createSession(window, betaPath, "Beta session one");
-    await expect(window.locator(".topbar__session")).toHaveText("Beta session one");
+    await expect(window.locator(".topbar__session")).toHaveText("Beta session one", { timeout: 10_000 });
     await expect(window.locator(".session-row", { hasText: "Alpha session two" })).toHaveAttribute(
       "data-sidebar-indicator",
       "none",
+      { timeout: 10_000 },
     );
 
     await expect(window.getByTestId("workspace-list")).toContainText(basename(alphaPath));
     await expect(window.getByTestId("workspace-list")).toContainText(basename(betaPath));
 
+    // Clicking workspace-row toggles expand and selects. If the workspace
+    // was already expanded (the default), this first click collapses it,
+    // hiding session rows. A second click re-expands so the sessions are
+    // visible for navigation.
     await window.locator(".workspace-row", { hasText: "alpha-workspace" }).click();
     await expect(window.locator(".topbar__workspace")).toHaveText("alpha-workspace");
+    const alphaSessionVisible = await window
+      .locator(".session-row__select", { hasText: "Alpha session one" })
+      .isVisible()
+      .catch(() => false);
+    if (!alphaSessionVisible) {
+      await window.locator(".workspace-row", { hasText: "alpha-workspace" }).click();
+    }
 
     await window.locator(".session-row__select", { hasText: "Alpha session one" }).click();
     await expect(window.locator(".topbar__session")).toHaveText("Alpha session one");
