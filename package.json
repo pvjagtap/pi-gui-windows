@@ -1,7 +1,7 @@
 {
   "name": "pi-gui",
   "private": true,
-  "version": "0.3.3",
+  "version": "0.3.4",
   "license": "MIT",
   "packageManager": "pnpm@10.25.0",
   "scripts": {
@@ -18,6 +18,16 @@
     "typescript": "^5.9.3"
   },
   "pnpm": {
-    "onlyBuiltDependencies": ["esbuild", "electron", "electron-winstaller", "koffi", "sharp", "protobufjs"]
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "electron",
+      "electron-winstaller",
+      "koffi",
+      "sharp",
+      "protobufjs"
+    ],
+    "patchedDependencies": {
+      "@mariozechner/pi-ai@0.63.1": "patches/@mariozechner__pi-ai@0.63.1.patch"
+    }
   }
 }
