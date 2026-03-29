@@ -27,7 +27,7 @@
       "protobufjs"
     ],
     "patchedDependencies": {
-      "@mariozechner/pi-ai@0.63.1": "patches/@mariozechner__pi-ai@0.63.1.patch"
+      "@mariozechner/pi-ai@0.64.0": "patches/@mariozechner__pi-ai@0.64.0.patch"
     }
   }
 }

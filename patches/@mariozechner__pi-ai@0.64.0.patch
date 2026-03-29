@@ -1,0 +1,65 @@
+diff --git a/dist/utils/oauth/anthropic.js b/dist/utils/oauth/anthropic.js
+--- a/dist/utils/oauth/anthropic.js
++++ b/dist/utils/oauth/anthropic.js
+@@ -12,7 +12,6 @@ const decode = (s) => atob(s);
+ const CLIENT_ID = decode("OWQxYzI1MGEtZTYxYi00NGQ5LTg4ZWQtNTk0NGQxOTYyZjVl");
+ const AUTHORIZE_URL = "https://claude.ai/oauth/authorize";
+ const TOKEN_URL = "https://platform.claude.com/v1/oauth/token";
+-const CALLBACK_HOST = "127.0.0.1";
+ const CALLBACK_PORT = 53692;
+ const CALLBACK_PATH = "/callback";
+ const REDIRECT_URI = `http://localhost:${CALLBACK_PORT}${CALLBACK_PATH}`;
+@@ -127,7 +126,7 @@ async function startCallbackServer(expectedState) {
+         server.on("error", (err) => {
+             reject(err);
+         });
+-        server.listen(CALLBACK_PORT, CALLBACK_HOST, () => {
++        server.listen(CALLBACK_PORT, () => {
+             resolve({
+                 server,
+                 redirectUri: REDIRECT_URI,
+diff --git a/dist/utils/oauth/google-antigravity.js b/dist/utils/oauth/google-antigravity.js
+--- a/dist/utils/oauth/google-antigravity.js
++++ b/dist/utils/oauth/google-antigravity.js
+@@ -86,7 +86,7 @@ async function startCallbackServer() {
+         server.on("error", (err) => {
+             reject(err);
+         });
+-        server.listen(51121, "127.0.0.1", () => {
++        server.listen(51121, () => {
+             resolve({
+                 server,
+                 cancelWait: () => {
+diff --git a/dist/utils/oauth/google-gemini-cli.js b/dist/utils/oauth/google-gemini-cli.js
+--- a/dist/utils/oauth/google-gemini-cli.js
++++ b/dist/utils/oauth/google-gemini-cli.js
+@@ -81,7 +81,7 @@ async function startCallbackServer() {
+         server.on("error", (err) => {
+             reject(err);
+         });
+-        server.listen(8085, "127.0.0.1", () => {
++        server.listen(8085, () => {
+             resolve({
+                 server,
+                 cancelWait: () => {
+diff --git a/dist/utils/oauth/openai-codex.js b/dist/utils/oauth/openai-codex.js
+--- a/dist/utils/oauth/openai-codex.js
++++ b/dist/utils/oauth/openai-codex.js
+@@ -196,7 +196,7 @@ function startLocalOAuthServer(state) {
+     });
+     return new Promise((resolve) => {
+         server
+-            .listen(1455, "127.0.0.1", () => {
++            .listen(1455, () => {
+             resolve({
+                 close: () => server.close(),
+                 cancelWait: () => {
+@@ -206,7 +206,7 @@ function startLocalOAuthServer(state) {
+             });
+         })
+             .on("error", (err) => {
+-            console.error("[openai-codex] Failed to bind http://127.0.0.1:1455 (", err.code, ") Falling back to manual paste.");
++            console.error("[openai-codex] Failed to bind http://localhost:1455 (", err.code, ") Falling back to manual paste.");
+             settleWait?.(null);
+             resolve({
+                 close: () => {

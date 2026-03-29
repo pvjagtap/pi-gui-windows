@@ -901,6 +901,7 @@ export class SessionSupervisor {
       setTheme: () => ({ success: false, error: "Theme switching not supported in pi-gui host UI" }),
       getToolsExpanded: () => false,
       setToolsExpanded: () => {},
+      setHiddenThinkingLabel: () => {},
     };
   }
 
