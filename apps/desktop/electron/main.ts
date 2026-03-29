@@ -20,11 +20,27 @@ import type {
 } from "../src/desktop-state";
 
 const isDev = Boolean(process.env.VITE_DEV_SERVER_URL);
+
+// Prevent multiple instances of the app from running on Windows.
+// Without this guard, the NSIS installer post-install launch (or shortcuts)
+// can cause runaway process accumulation.
+const gotSingleInstanceLock = app.requestSingleInstanceLock();
+if (!gotSingleInstanceLock) {
+  app.quit();
+}
+
 let store: DesktopAppStore;
 const themeManager = new ThemeManager();
 let mainWindow: BrowserWindow | null = null;
 let stopPublishingState: (() => void) | undefined;
 let stopNotifications: (() => void) | undefined;
+
+app.on("second-instance", () => {
+  if (mainWindow) {
+    if (mainWindow.isMinimized()) mainWindow.restore();
+    mainWindow.focus();
+  }
+});
 
 const SUPPORTED_IMAGE_TYPES = [
   { extension: "png", mimeType: "image/png" },
@@ -353,6 +369,16 @@ app.whenReady().then(async () => {
   themeManager.setWindow(mainWindow);
   attachStatePublisher(mainWindow);
 
+  // Log Electron process metrics periodically for diagnostics.
+  const logProcessMetrics = () => {
+    const metrics = app.getAppMetrics();
+    const summary = metrics.map((m) => `${m.type}(pid=${m.pid}, mem=${Math.round(m.memory.workingSetSize / 1024)}MB)`);
+    console.log(`[process-monitor] ${metrics.length} Electron processes: ${summary.join(", ")}`);
+  };
+  logProcessMetrics();
+  const metricsInterval = setInterval(logProcessMetrics, 60_000);
+  app.on("before-quit", () => clearInterval(metricsInterval));
+
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {
       mainWindow = createWindow();
@@ -373,6 +399,9 @@ app.on("window-all-closed", () => {
 app.on("before-quit", () => {
   stopNotifications?.();
   stopNotifications = undefined;
+  // Dispose all open pi.exe child processes to prevent orphaned process
+  // accumulation across app restarts (Issue #13).
+  store?.driver.destroyAllSessions();
 });
 
 function resolveInitialWorkspacePaths(): readonly string[] {
