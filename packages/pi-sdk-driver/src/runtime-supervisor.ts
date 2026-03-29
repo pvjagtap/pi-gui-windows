@@ -48,6 +48,7 @@ export class RuntimeSupervisor implements RuntimeResourceDriver {
   private readonly authStorage: AuthStorage;
   private readonly modelRegistry: ModelRegistry;
   private readonly contexts = new Map<string, RuntimeContext>();
+  private readonly disabledProviders = new Set<string>();
 
   constructor(options: RuntimeSupervisorOptions = {}) {
     const deps = createRuntimeDependencies(options);
@@ -72,6 +73,7 @@ export class RuntimeSupervisor implements RuntimeResourceDriver {
 
   async login(workspace: WorkspaceRef, providerId: string, callbacks: RuntimeLoginCallbacks): Promise<RuntimeSnapshot> {
     const context = await this.ensureContext(workspace);
+    this.disabledProviders.delete(providerId);
     await this.authStorage.login(providerId, callbacks);
     this.modelRegistry.refresh();
     await context.resourceLoader.reload();
@@ -80,6 +82,7 @@ export class RuntimeSupervisor implements RuntimeResourceDriver {
 
   async logout(workspace: WorkspaceRef, providerId: string): Promise<RuntimeSnapshot> {
     const context = await this.ensureContext(workspace);
+    this.disabledProviders.add(providerId);
     this.authStorage.logout(providerId);
     this.modelRegistry.refresh();
     await context.resourceLoader.reload();
@@ -230,7 +233,7 @@ export class RuntimeSupervisor implements RuntimeResourceDriver {
         return {
           id: providerId,
           name: oauthProvider?.name ?? providerId,
-          hasAuth: this.authStorage.hasAuth(providerId),
+          hasAuth: this.disabledProviders.has(providerId) ? false : this.authStorage.hasAuth(providerId),
           authType: auth?.type ?? "none",
           oauthSupported: Boolean(oauthProvider),
         };
@@ -494,7 +497,14 @@ function inferSkillName(filePath: string): string {
 }
 
 function inferExtensionName(filePath: string): string {
-  return basename(filePath).replace(/\.(c|m)?(t|j)sx?$/i, "");
+  const name = basename(filePath).replace(/\.(c|m)?(t|j)sx?$/i, "");
+  if (name === "index") {
+    const parent = basename(dirname(filePath));
+    if (parent) {
+      return parent;
+    }
+  }
+  return name;
 }
 
 function toRuntimeSourceInfo(path: string, metadata: PathMetadata): RuntimeSourceInfo {
