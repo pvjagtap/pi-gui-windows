@@ -12,6 +12,6 @@
     "forceConsistentCasingInFileNames": true,
     "types": ["node", "electron"]
   },
-  "include": ["electron/**/*.ts", "src/**/*.ts"],
+  "include": ["electron/**/*.ts"],
   "exclude": ["dist", "dist-electron", "node_modules", "src/hooks"]
 }
