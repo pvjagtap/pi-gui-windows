@@ -20,7 +20,7 @@ pnpm dev
 
 ```bash
 pnpm build
-pnpm --filter @pi-gui/desktop dist:win
+pnpm --filter @pi-desktop/desktop dist:win
 ```
 
 The installer is output to `apps/desktop/release/`.

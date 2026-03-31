@@ -1,4 +1,4 @@
-import type { RuntimeSettingsSnapshot } from "@pi-gui/session-driver/runtime-types";
+import type { RuntimeSettingsSnapshot } from "@pi-desktop/session-driver/runtime-types";
 import type {
   AppView,
   ComposerImageAttachment,

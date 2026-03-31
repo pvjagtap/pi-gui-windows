@@ -1,5 +1,5 @@
 {
-  "name": "@pi-gui/catalogs",
+  "name": "@pi-desktop/catalogs",
   "version": "0.0.0",
   "private": true,
   "license": "MIT",
@@ -17,6 +17,6 @@
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@pi-gui/session-driver": "workspace:*"
+    "@pi-desktop/session-driver": "workspace:*"
   }
 }

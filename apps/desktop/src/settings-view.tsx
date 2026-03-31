@@ -1,4 +1,4 @@
-import type { RuntimeSettingsSnapshot, RuntimeSnapshot } from "@pi-gui/session-driver/runtime-types";
+import type { RuntimeSettingsSnapshot, RuntimeSnapshot } from "@pi-desktop/session-driver/runtime-types";
 import type { NotificationPreferences, WorkspaceRecord } from "./desktop-state";
 import { RefreshIcon } from "./icons";
 import { SettingsAppearanceSection } from "./settings-appearance-section";

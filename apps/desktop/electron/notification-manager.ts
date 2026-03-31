@@ -3,8 +3,8 @@ import { appendFile, mkdir } from "node:fs/promises";
 import { dirname } from "node:path";
 import type { DesktopAppStore } from "./app-store";
 import type { DesktopAppState } from "../src/desktop-state";
-import { sessionKey } from "@pi-gui/pi-sdk-driver";
-import type { SessionDriverEvent, SessionRef } from "@pi-gui/session-driver";
+import { sessionKey } from "@pi-desktop/pi-sdk-driver";
+import type { SessionDriverEvent, SessionRef } from "@pi-desktop/session-driver";
 import { getSelectedSession } from "../src/desktop-state";
 
 export class NotificationManager {

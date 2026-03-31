@@ -25,13 +25,13 @@ importers:
 
   apps/desktop:
     dependencies:
-      '@pi-gui/catalogs':
+      '@pi-desktop/catalogs':
         specifier: workspace:*
         version: link:../../packages/catalogs
-      '@pi-gui/pi-sdk-driver':
+      '@pi-desktop/pi-sdk-driver':
         specifier: workspace:*
         version: link:../../packages/pi-sdk-driver
-      '@pi-gui/session-driver':
+      '@pi-desktop/session-driver':
         specifier: workspace:*
         version: link:../../packages/session-driver
       react:
@@ -102,7 +102,7 @@ importers:
 
   packages/catalogs:
     dependencies:
-      '@pi-gui/session-driver':
+      '@pi-desktop/session-driver':
         specifier: workspace:*
         version: link:../session-driver
 
@@ -111,10 +111,10 @@ importers:
       '@mariozechner/pi-coding-agent':
         specifier: ^0.64.0
         version: 0.64.0(ws@8.19.0)(zod@4.3.6)
-      '@pi-gui/catalogs':
+      '@pi-desktop/catalogs':
         specifier: workspace:*
         version: link:../catalogs
-      '@pi-gui/session-driver':
+      '@pi-desktop/session-driver':
         specifier: workspace:*
         version: link:../session-driver
 

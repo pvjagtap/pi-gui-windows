@@ -1,7 +1,7 @@
 import { contextBridge, ipcRenderer } from "electron";
 import { desktopIpc, type PiDesktopCommand } from "../src/ipc";
-import type { HostUiResponse } from "@pi-gui/session-driver";
-import type { RuntimeSettingsSnapshot } from "@pi-gui/session-driver/runtime-types";
+import type { HostUiResponse } from "@pi-desktop/session-driver";
+import type { RuntimeSettingsSnapshot } from "@pi-desktop/session-driver/runtime-types";
 import type {
   AppView,
   ComposerImageAttachment,

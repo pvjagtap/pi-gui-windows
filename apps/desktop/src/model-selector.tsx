@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { RuntimeSnapshot } from "@pi-gui/session-driver/runtime-types";
+import type { RuntimeSnapshot } from "@pi-desktop/session-driver/runtime-types";
 import type { SessionRecord } from "./desktop-state";
 import { buildModelOptions, THINKING_OPTIONS, type ComposerModelOption } from "./composer-commands";
 

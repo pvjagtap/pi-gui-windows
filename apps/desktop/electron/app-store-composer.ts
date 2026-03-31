@@ -1,5 +1,5 @@
-import { sessionKey } from "@pi-gui/pi-sdk-driver";
-import type { SessionRef } from "@pi-gui/session-driver";
+import { sessionKey } from "@pi-desktop/pi-sdk-driver";
+import type { SessionRef } from "@pi-desktop/session-driver";
 import type { ComposerImageAttachment, DesktopAppState, TranscriptMessage, WorkspaceSessionTarget } from "../src/desktop-state";
 import { toSessionRef } from "./app-store-utils";
 import {

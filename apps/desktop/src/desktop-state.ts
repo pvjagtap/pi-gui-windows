@@ -1,5 +1,5 @@
-import type { HostUiRequest, SessionConfig } from "@pi-gui/session-driver";
-import type { RuntimeCommandRecord, RuntimeSnapshot } from "@pi-gui/session-driver/runtime-types";
+import type { HostUiRequest, SessionConfig } from "@pi-desktop/session-driver";
+import type { RuntimeCommandRecord, RuntimeSnapshot } from "@pi-desktop/session-driver/runtime-types";
 export type SessionStatus = "idle" | "running" | "failed";
 export type { SessionRole, TranscriptMessage } from "./timeline-types";
 import type { TranscriptMessage } from "./timeline-types";

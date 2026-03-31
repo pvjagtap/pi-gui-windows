@@ -13,7 +13,7 @@ import {
   type ExtensionWidgetOptions,
   type SessionInfo,
 } from "@mariozechner/pi-coding-agent";
-import type { SessionCatalogSnapshot, WorkspaceCatalogSnapshot } from "@pi-gui/catalogs";
+import type { SessionCatalogSnapshot, WorkspaceCatalogSnapshot } from "@pi-desktop/catalogs";
 import type {
   CreateSessionOptions,
   HostUiRequest,
@@ -29,8 +29,8 @@ import type {
   Unsubscribe,
   WorkspaceId,
   WorkspaceRef,
-} from "@pi-gui/session-driver";
-import type { RuntimeCommandRecord } from "@pi-gui/session-driver/runtime-types";
+} from "@pi-desktop/session-driver";
+import type { RuntimeCommandRecord } from "@pi-desktop/session-driver/runtime-types";
 import { JsonCatalogStore, type SessionFileCatalogStorage } from "./json-catalog-store.js";
 import {
   applyHostUiRequestToExtensionUiState,

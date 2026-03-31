@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { RuntimeSettingsSnapshot, RuntimeSnapshot } from "@pi-gui/session-driver/runtime-types";
+import type { RuntimeSettingsSnapshot, RuntimeSnapshot } from "@pi-desktop/session-driver/runtime-types";
 import { ModelIcon, ReasoningIcon, SettingsIcon } from "./icons";
 import {
   filterModels,

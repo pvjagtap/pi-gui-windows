@@ -1,10 +1,10 @@
-import type { SessionConfig } from "@pi-gui/session-driver";
+import type { SessionConfig } from "@pi-desktop/session-driver";
 import type {
   RuntimeCommandRecord,
   RuntimeProviderRecord,
   RuntimeSettingsSnapshot,
   RuntimeSnapshot,
-} from "@pi-gui/session-driver/runtime-types";
+} from "@pi-desktop/session-driver/runtime-types";
 import { titleCase } from "./string-utils";
 
 export type ComposerSlashCommandKind =

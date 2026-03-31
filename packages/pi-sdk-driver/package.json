@@ -1,5 +1,5 @@
 {
-  "name": "@pi-gui/pi-sdk-driver",
+  "name": "@pi-desktop/pi-sdk-driver",
   "version": "0.0.0",
   "private": true,
   "license": "MIT",
@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@mariozechner/pi-coding-agent": "^0.64.0",
-    "@pi-gui/catalogs": "workspace:*",
-    "@pi-gui/session-driver": "workspace:*"
+    "@pi-desktop/catalogs": "workspace:*",
+    "@pi-desktop/session-driver": "workspace:*"
   }
 }

@@ -1,4 +1,4 @@
-declare module "@pi-gui/session-driver" {
+declare module "@pi-desktop/session-driver" {
   export type WorkspaceId = string;
   export type SessionId = string;
   export type RunId = string;
@@ -274,8 +274,8 @@ declare module "@pi-gui/session-driver" {
   }
 }
 
-declare module "@pi-gui/session-driver/runtime-types" {
-  import type { WorkspaceRef } from "@pi-gui/session-driver";
+declare module "@pi-desktop/session-driver/runtime-types" {
+  import type { WorkspaceRef } from "@pi-desktop/session-driver";
 
   export type RuntimeAuthType = "oauth" | "api_key" | "none";
   export type RuntimeSourceScope = "user" | "project" | "temporary";

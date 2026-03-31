@@ -1,4 +1,4 @@
-import type { SessionCatalogSnapshot, WorkspaceCatalogSnapshot, WorkspaceId } from "@pi-gui/catalogs";
+import type { SessionCatalogSnapshot, WorkspaceCatalogSnapshot, WorkspaceId } from "@pi-desktop/catalogs";
 import type {
   CreateSessionOptions,
   HostUiResponse,
@@ -10,7 +10,7 @@ import type {
   SessionMessageInput,
   Unsubscribe,
   WorkspaceRef,
-} from "@pi-gui/session-driver";
+} from "@pi-desktop/session-driver";
 import {
   SessionSupervisor,
   type PiSdkDriverOptions,

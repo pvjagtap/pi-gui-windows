@@ -12,7 +12,7 @@ import type {
   WorktreeCatalogEntry,
   WorktreeCatalogSnapshot,
   WorktreeId,
-} from "@pi-gui/catalogs";
+} from "@pi-desktop/catalogs";
 import { sessionKey } from "./session-supervisor-utils.js";
 
 type CatalogFileState = {

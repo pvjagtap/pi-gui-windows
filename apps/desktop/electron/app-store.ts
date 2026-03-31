@@ -7,10 +7,10 @@ import {
   PiSdkDriver,
   type PiSdkDriverConfig,
   sessionKey,
-} from "@pi-gui/pi-sdk-driver";
-import type { SessionCatalogEntry } from "@pi-gui/catalogs";
-import type { HostUiResponse, SessionConfig, SessionDriverEvent, SessionRef, WorkspaceRef } from "@pi-gui/session-driver";
-import type { RuntimeCommandRecord, RuntimeLoginCallbacks, RuntimeSettingsSnapshot, RuntimeSnapshot } from "@pi-gui/session-driver/runtime-types";
+} from "@pi-desktop/pi-sdk-driver";
+import type { SessionCatalogEntry } from "@pi-desktop/catalogs";
+import type { HostUiResponse, SessionConfig, SessionDriverEvent, SessionRef, WorkspaceRef } from "@pi-desktop/session-driver";
+import type { RuntimeCommandRecord, RuntimeLoginCallbacks, RuntimeSettingsSnapshot, RuntimeSnapshot } from "@pi-desktop/session-driver/runtime-types";
 import {
   type AppView,
   createEmptyDesktopAppState,

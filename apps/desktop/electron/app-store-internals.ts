@@ -1,6 +1,6 @@
-import type { PiSdkDriver, JsonCatalogStore } from "@pi-gui/pi-sdk-driver";
-import type { SessionConfig, SessionRef, WorkspaceRef } from "@pi-gui/session-driver";
-import type { RuntimeSnapshot } from "@pi-gui/session-driver/runtime-types";
+import type { PiSdkDriver, JsonCatalogStore } from "@pi-desktop/pi-sdk-driver";
+import type { SessionConfig, SessionRef, WorkspaceRef } from "@pi-desktop/session-driver";
+import type { RuntimeSnapshot } from "@pi-desktop/session-driver/runtime-types";
 import type { AppView, ComposerImageAttachment, DesktopAppState, TranscriptMessage } from "../src/desktop-state";
 import type { SessionStateMap } from "./session-state-map";
 import type { GitWorktreeManager } from "./worktree-manager";

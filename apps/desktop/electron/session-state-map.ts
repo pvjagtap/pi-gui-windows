@@ -1,6 +1,6 @@
-import type { SessionConfig } from "@pi-gui/session-driver";
-import { createEmptyExtensionUiState as createBaseExtensionUiState, type ExtensionUiState } from "@pi-gui/pi-sdk-driver";
-import type { RuntimeCommandRecord } from "@pi-gui/session-driver/runtime-types";
+import type { SessionConfig } from "@pi-desktop/session-driver";
+import { createEmptyExtensionUiState as createBaseExtensionUiState, type ExtensionUiState } from "@pi-desktop/pi-sdk-driver";
+import type { RuntimeCommandRecord } from "@pi-desktop/session-driver/runtime-types";
 import type {
   ComposerImageAttachment,
   SessionExtensionDialogRecord,

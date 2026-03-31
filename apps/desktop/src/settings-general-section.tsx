@@ -1,4 +1,4 @@
-import type { RuntimeSnapshot } from "@pi-gui/session-driver/runtime-types";
+import type { RuntimeSnapshot } from "@pi-desktop/session-driver/runtime-types";
 import type { WorkspaceRecord } from "./desktop-state";
 import { SettingsIcon, SkillIcon } from "./icons";
 import { SettingsCard, SettingsInfoRow, labelForThinking } from "./settings-utils";

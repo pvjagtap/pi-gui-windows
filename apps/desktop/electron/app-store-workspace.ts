@@ -1,4 +1,4 @@
-import { sessionKey } from "@pi-gui/pi-sdk-driver";
+import { sessionKey } from "@pi-desktop/pi-sdk-driver";
 import type { CreateSessionInput, DesktopAppState, WorkspaceSessionTarget } from "../src/desktop-state";
 import { toSessionRef } from "./app-store-utils";
 import type { AppStoreInternals, RefreshStateOptions } from "./app-store-internals";

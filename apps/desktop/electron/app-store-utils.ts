@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
-import type { SessionCatalogEntry, WorkspaceCatalogEntry, WorktreeCatalogEntry } from "@pi-gui/catalogs";
-import { sessionKey } from "@pi-gui/pi-sdk-driver";
-import type { SessionAttachment, SessionConfig, SessionRef } from "@pi-gui/session-driver";
+import type { SessionCatalogEntry, WorkspaceCatalogEntry, WorktreeCatalogEntry } from "@pi-desktop/catalogs";
+import { sessionKey } from "@pi-desktop/pi-sdk-driver";
+import type { SessionAttachment, SessionConfig, SessionRef } from "@pi-desktop/session-driver";
 import type {
   ComposerImageAttachment,
   SessionRecord,
