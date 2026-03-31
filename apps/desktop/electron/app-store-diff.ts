@@ -105,6 +105,36 @@ export function stageFile(workspacePath: string, filePath: string): Promise<void
   });
 }
 
+export function discardFile(workspacePath: string, filePath: string): Promise<void> {
+  validateFilePath(workspacePath, filePath);
+  return new Promise((resolve, reject) => {
+    execFile(
+      "git",
+      ["checkout", "--", filePath],
+      { cwd: workspacePath },
+      (error) => {
+        if (error) {
+          // For untracked files, checkout fails — use git clean instead
+          execFile(
+            "git",
+            ["clean", "-f", "--", filePath],
+            { cwd: workspacePath },
+            (cleanError) => {
+              if (cleanError) {
+                reject(cleanError);
+                return;
+              }
+              resolve();
+            },
+          );
+          return;
+        }
+        resolve();
+      },
+    );
+  });
+}
+
 function parseStatus(xy: string): ChangedFileEntry["status"] {
   const x = xy[0] ?? " ";
   const y = xy[1] ?? " ";

@@ -112,12 +112,16 @@ contextBridge.exposeInMainWorld("piApp", {
     ipcRenderer.invoke(desktopIpc.submitComposer, text) as Promise<DesktopAppState>,
   listWorkspaceFiles: (workspaceId: string) =>
     ipcRenderer.invoke(desktopIpc.listWorkspaceFiles, workspaceId) as Promise<string[]>,
+  listDirectory: (workspaceId: string, relativePath?: string) =>
+    ipcRenderer.invoke(desktopIpc.listDirectory, workspaceId, relativePath) as Promise<{ name: string; type: "file" | "directory" }[]>,
   getChangedFiles: (workspaceId: string) =>
     ipcRenderer.invoke(desktopIpc.getChangedFiles, workspaceId) as Promise<{ path: string; status: "added" | "modified" | "deleted" | "untracked" }[]>,
   getFileDiff: (workspaceId: string, filePath: string) =>
     ipcRenderer.invoke(desktopIpc.getFileDiff, workspaceId, filePath) as Promise<string>,
   stageFile: (workspaceId: string, filePath: string) =>
     ipcRenderer.invoke(desktopIpc.stageFile, workspaceId, filePath) as Promise<void>,
+  discardFile: (workspaceId: string, filePath: string) =>
+    ipcRenderer.invoke(desktopIpc.discardFile, workspaceId, filePath) as Promise<void>,
   readSkillSource: (workspaceId: string, filePath: string) =>
     ipcRenderer.invoke(desktopIpc.readSkillSource, workspaceId, filePath) as Promise<string>,
   toggleWindowMaximize: () => ipcRenderer.invoke(desktopIpc.toggleWindowMaximize) as Promise<void>,

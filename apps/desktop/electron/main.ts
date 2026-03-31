@@ -4,8 +4,8 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { DesktopAppStore } from "./app-store";
-import { getChangedFiles, getFileDiff, stageFile } from "./app-store-diff";
-import { listWorkspaceFiles } from "./app-store-files";
+import { getChangedFiles, getFileDiff, stageFile, discardFile } from "./app-store-diff";
+import { listWorkspaceFiles, listDirectory } from "./app-store-files";
 import { NotificationManager } from "./notification-manager";
 import { ThemeManager } from "./theme-manager";
 import type { ThemeMode } from "../src/desktop-state";
@@ -340,6 +340,13 @@ app.whenReady().then(async () => {
     }
     return listWorkspaceFiles(workspacePath);
   });
+  ipcMain.handle(desktopIpc.listDirectory, async (_event, workspaceId: string, relativePath?: string) => {
+    const workspacePath = store.getWorkspacePath(workspaceId);
+    if (!workspacePath) {
+      return [];
+    }
+    return listDirectory(workspacePath, relativePath);
+  });
   ipcMain.handle(desktopIpc.getChangedFiles, async (_event, workspaceId: string) => {
     const workspacePath = store.getWorkspacePath(workspaceId);
     if (!workspacePath) {
@@ -360,6 +367,13 @@ app.whenReady().then(async () => {
       throw new Error(`Unknown workspace: ${workspaceId}`);
     }
     await stageFile(workspacePath, filePath);
+  });
+  ipcMain.handle(desktopIpc.discardFile, async (_event, workspaceId: string, filePath: string) => {
+    const workspacePath = store.getWorkspacePath(workspaceId);
+    if (!workspacePath) {
+      throw new Error(`Unknown workspace: ${workspaceId}`);
+    }
+    await discardFile(workspacePath, filePath);
   });
   ipcMain.handle(desktopIpc.toggleWindowMaximize, (event) => {
     const window = BrowserWindow.fromWebContents(event.sender);

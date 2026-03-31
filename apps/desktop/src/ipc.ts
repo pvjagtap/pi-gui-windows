@@ -56,9 +56,11 @@ export const desktopIpc = {
   toggleWindowMaximize: "pi-gui:toggle-window-maximize",
   updateTitleBarOverlay: "pi-gui:update-title-bar-overlay",
   listWorkspaceFiles: "pi-gui:list-workspace-files",
+  listDirectory: "pi-gui:list-directory",
   getChangedFiles: "pi-gui:get-changed-files",
   getFileDiff: "pi-gui:get-file-diff",
   stageFile: "pi-gui:stage-file",
+  discardFile: "pi-gui:discard-file",
   readSkillSource: "pi-gui:read-skill-source",
   getThemeMode: "pi-gui:get-theme-mode",
   getResolvedTheme: "pi-gui:get-resolved-theme",
@@ -168,9 +170,11 @@ export interface PiDesktopApi {
   updateComposerDraft(composerDraft: string): Promise<DesktopAppState>;
   submitComposer(text: string): Promise<DesktopAppState>;
   listWorkspaceFiles(workspaceId: string): Promise<string[]>;
+  listDirectory(workspaceId: string, relativePath?: string): Promise<{ name: string; type: "file" | "directory" }[]>;
   getChangedFiles(workspaceId: string): Promise<{ path: string; status: "added" | "modified" | "deleted" | "untracked" }[]>;
   getFileDiff(workspaceId: string, filePath: string): Promise<string>;
   stageFile(workspaceId: string, filePath: string): Promise<void>;
+  discardFile(workspaceId: string, filePath: string): Promise<void>;
   readSkillSource(workspaceId: string, filePath: string): Promise<string>;
   toggleWindowMaximize(): Promise<void>;
   updateTitleBarOverlay(color: string, symbolColor: string): Promise<void>;
