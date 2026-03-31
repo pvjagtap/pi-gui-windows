@@ -26,7 +26,7 @@ export const ClosingCard: React.FC = () => {
           marginBottom: 20,
         }}
       >
-        github.com/minghinmatthewlam/pi-app
+        github.com/pvjagtap/pi-desktop
       </div>
       <div
         style={{

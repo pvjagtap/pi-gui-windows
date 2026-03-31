@@ -283,6 +283,107 @@ async function captureSkillsSettings(page: Page): Promise<void> {
   }
 }
 
+async function captureFileExplorer(page: Page, workspacePath: string): Promise<void> {
+  console.log("  Capturing file explorer & changed files...");
+  const framesDir = await mkdtemp(path.join(tmpdir(), "pi-capture-explorer-"));
+
+  // Create some demo files so the explorer has content
+  await writeFile(path.join(workspacePath, "src", "index.ts"), `export const main = () => console.log("hello");\n`, "utf8");
+  await writeFile(path.join(workspacePath, "src", "utils.ts"), `export const add = (a: number, b: number) => a + b;\n`, "utf8");
+  await writeFile(path.join(workspacePath, "package.json"), `{ "name": "demo-project", "version": "1.0.0" }\n`, "utf8");
+
+  const stopRecording = startFrameRecorder(page, framesDir);
+  try {
+    await hold(600);
+
+    // Click the explorer toggle in the sidebar to expand file tree
+    const explorerToggle = page.locator('[data-testid="explorer-toggle"], .sidebar__explorer-toggle');
+    if (await explorerToggle.isVisible({ timeout: 3_000 }).catch(() => false)) {
+      await explorerToggle.click();
+      await hold(2000);
+    }
+
+    // Show the sidebar file tree
+    await hold(2000);
+
+    // Navigate to the Changes view if available
+    const changesTab = page.locator('[data-testid="changes-tab"], .sidebar__changes-tab');
+    if (await changesTab.isVisible({ timeout: 3_000 }).catch(() => false)) {
+      await changesTab.click();
+      await hold(2500);
+    }
+
+    // Hold on the current view
+    await hold(2000);
+  } finally {
+    const frameCount = await stopRecording();
+    console.log(`  Captured ${frameCount} frames`);
+    await renderClip(framesDir, path.join(capturesDir, "file-explorer.mp4"));
+    await rm(framesDir, { recursive: true, force: true });
+  }
+}
+
+async function captureDiffViewer(page: Page, workspacePath: string): Promise<void> {
+  console.log("  Capturing diff viewer...");
+  const framesDir = await mkdtemp(path.join(tmpdir(), "pi-capture-diff-"));
+
+  // Create a modified file to show a diff
+  await writeFile(
+    path.join(workspacePath, "README.md"),
+    `# Demo Project\n\nThis project demonstrates the pi desktop app.\n\n## Features\n\n- AI-assisted coding\n- Multi-session support\n- File explorer\n`,
+    "utf8",
+  );
+
+  const stopRecording = startFrameRecorder(page, framesDir);
+  try {
+    await hold(600);
+
+    // Try to open a diff via the Changes panel or IPC
+    const state = await getDesktopState(page);
+    const workspace = state.workspaces[0];
+    if (workspace) {
+      // Try to get changed files and open a diff
+      const changedFiles = await page.evaluate(async (wId) => {
+        const app = (window as PiAppWindow).piApp;
+        if (!app) return [];
+        return app.getChangedFiles(wId);
+      }, workspace.id);
+
+      if (changedFiles.length > 0) {
+        // Try to trigger diff view for the first changed file
+        await page.evaluate(async ({ wId, filePath }) => {
+          const app = (window as PiAppWindow).piApp;
+          if (!app) return;
+          await app.getFileDiff(wId, filePath);
+        }, { wId: workspace.id, filePath: changedFiles[0].path });
+        await hold(3000);
+      }
+    }
+
+    // Click on a changed file in the sidebar if visible
+    const changedFileItem = page.locator('.changed-file, [data-testid="changed-file"]').first();
+    if (await changedFileItem.isVisible({ timeout: 3_000 }).catch(() => false)) {
+      await changedFileItem.click();
+      await hold(4000);
+    }
+
+    // Show the diff view
+    await hold(2000);
+
+    // Close the diff viewer if there's a close button
+    const closeBtn = page.locator('.diff-viewer__close, [data-testid="diff-close"]');
+    if (await closeBtn.isVisible({ timeout: 2_000 }).catch(() => false)) {
+      await closeBtn.click();
+      await hold(1000);
+    }
+  } finally {
+    const frameCount = await stopRecording();
+    console.log(`  Captured ${frameCount} frames`);
+    await renderClip(framesDir, path.join(capturesDir, "diff-viewer.mp4"));
+    await rm(framesDir, { recursive: true, force: true });
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
@@ -322,6 +423,7 @@ async function main(): Promise<void> {
 
   // Create a workspace with demo skills so the Skills view has content
   const workspacePath = await makeWorkspace("demo-project");
+  await mkdir(path.join(workspacePath, "src"), { recursive: true });
   await mkdir(path.join(workspacePath, ".agents", "skills", "code-review"), { recursive: true });
   await writeFile(
     path.join(workspacePath, ".agents", "skills", "code-review", "SKILL.md"),
@@ -335,16 +437,24 @@ async function main(): Promise<void> {
     "utf8",
   );
 
-  console.log("Clip 1/3: Parallel Sessions");
+  console.log("Clip 1/5: Parallel Sessions");
   await withFreshApp(workspacePath, captureParallelSessions);
   console.log("  Done.\n");
 
-  console.log("Clip 2/3: Slash Commands");
+  console.log("Clip 2/5: Slash Commands");
   await withFreshApp(workspacePath, captureSlashCommands);
   console.log("  Done.\n");
 
-  console.log("Clip 3/3: Skills & Settings");
+  console.log("Clip 3/5: Skills & Settings");
   await withFreshApp(workspacePath, captureSkillsSettings);
+  console.log("  Done.\n");
+
+  console.log("Clip 4/5: File Explorer & Changes");
+  await withFreshApp(workspacePath, (page) => captureFileExplorer(page, workspacePath));
+  console.log("  Done.\n");
+
+  console.log("Clip 5/5: Diff Viewer");
+  await withFreshApp(workspacePath, (page) => captureDiffViewer(page, workspacePath));
   console.log("  Done.\n");
 
   console.log("All clips captured to video/public/captures/");

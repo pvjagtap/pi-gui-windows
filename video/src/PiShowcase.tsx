@@ -8,9 +8,11 @@ const { fps } = video;
 
 // Clip durations (seconds) — from ffprobe of actual captured content
 const clipDurations = {
-  parallel: 12.4,
-  slash: 12.6,
-  skills: 9,
+  parallel: 9.2,
+  slash: 18.6,
+  skills: 12.8,
+  explorer: 9,
+  diff: 12.2,
 };
 
 export const PiShowcase: React.FC = () => {
@@ -31,6 +33,20 @@ export const PiShowcase: React.FC = () => {
         <FeatureScene
           clip="slash-commands.mp4"
           label="Context-aware command palette"
+        />
+      </Series.Sequence>
+
+      <Series.Sequence durationInFrames={Math.ceil(clipDurations.explorer * fps) + 15}>
+        <FeatureScene
+          clip="file-explorer.mp4"
+          label="File explorer & changed files panel"
+        />
+      </Series.Sequence>
+
+      <Series.Sequence durationInFrames={Math.ceil(clipDurations.diff * fps) + 15}>
+        <FeatureScene
+          clip="diff-viewer.mp4"
+          label="Side-by-side diff viewer"
         />
       </Series.Sequence>
 
