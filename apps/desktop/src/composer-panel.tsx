@@ -131,9 +131,7 @@ export function ComposerPanel({
               ))}
             </div>
           ) : null}
-          {extensionDock ? (
-            <ExtensionDock dock={extensionDock} expanded={extensionDockExpanded} onToggle={onToggleExtensionDock} />
-          ) : null}
+          {/* Extension dock hidden – was showing raw status text ("G", "watchdog") in composer */}
           <div className="composer__editor">
             {showMentionMenu ? (
               <div className="composer__menus">

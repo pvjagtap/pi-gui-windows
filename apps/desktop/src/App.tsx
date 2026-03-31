@@ -11,6 +11,7 @@ import {
 import { formatRelativeTime } from "./string-utils";
 import { ComposerPanel } from "./composer-panel";
 import { DiffPanel } from "./diff-panel";
+import { useChangedFiles } from "./use-changed-files";
 import type { ComposerSlashCommand } from "./composer-commands";
 import { desktopCommands, getDesktopCommandFromShortcut, type PiDesktopCommand } from "./ipc";
 import { SkillsView } from "./skills-view";
@@ -131,8 +132,39 @@ export default function App() {
   const [showJumpToLatest, setShowJumpToLatest] = useState(false);
   const [showDiffPanel, setShowDiffPanel] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const sidebarCollapsedBeforeDiffRef = useRef<boolean | null>(null);
   const threadSearch = useThreadSearch(timelinePaneRef);
   const api = window.piApp;
+
+  /** Toggle diff panel and auto-collapse/restore sidebar */
+  const toggleDiffPanel = () => {
+    setShowDiffPanel((prev) => {
+      const next = !prev;
+      if (next) {
+        // Opening: save current sidebar state and collapse it
+        sidebarCollapsedBeforeDiffRef.current = sidebarCollapsed;
+        setSidebarCollapsed(true);
+      } else {
+        // Closing: restore previous sidebar state
+        if (sidebarCollapsedBeforeDiffRef.current === false) {
+          setSidebarCollapsed(false);
+        }
+        sidebarCollapsedBeforeDiffRef.current = null;
+        changedFiles.setSelectedFile(null);
+      }
+      return next;
+    });
+  };
+
+  /** Open diff panel with a specific file selected (from timeline click) */
+  const openDiffForFile = (filePath: string) => {
+    changedFiles.setSelectedFile(filePath);
+    if (!showDiffPanel) {
+      sidebarCollapsedBeforeDiffRef.current = sidebarCollapsed;
+      setSidebarCollapsed(true);
+      setShowDiffPanel(true);
+    }
+  };
 
   useEffect(() => {
     const piApi = window.piApp;
@@ -157,6 +189,13 @@ export default function App() {
 
   const selectedWorkspace = snapshot ? (getSelectedWorkspace(snapshot) ?? snapshot.workspaces[0]) : undefined;
   const selectedSession = snapshot ? (getSelectedSession(snapshot) ?? selectedWorkspace?.sessions[0]) : undefined;
+
+  const changedFiles = useChangedFiles(
+    api,
+    selectedWorkspace?.id,
+    selectedSession?.status,
+    selectedSession?.transcript ?? [],
+  );
   const {
     activeWorktrees,
     linkedWorktreeByWorkspaceId,
@@ -384,7 +423,7 @@ export default function App() {
       // Cmd+D toggles diff panel
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "d" && !event.shiftKey) {
         event.preventDefault();
-        setShowDiffPanel((prev) => !prev);
+        toggleDiffPanel();
         return;
       }
       // Cmd+B toggles sidebar
@@ -468,7 +507,7 @@ export default function App() {
     }
 
     composer.style.height = "0px";
-    composer.style.height = `${Math.min(composer.scrollHeight, 220)}px`;
+    composer.style.height = `${Math.min(composer.scrollHeight, 140)}px`;
   }, [composerDraft]);
 
   useEffect(() => {
@@ -491,6 +530,21 @@ export default function App() {
 
     setShowJumpToLatest(true);
   }, [selectedSession, selectedSessionKey]);
+
+  // Auto-scroll during streaming: observe DOM mutations inside the timeline pane
+  useEffect(() => {
+    const pane = timelinePaneRef.current;
+    if (!pane) return undefined;
+
+    const observer = new MutationObserver(() => {
+      if (pinnedToBottomRef.current) {
+        pane.scrollTop = pane.scrollHeight;
+      }
+    });
+
+    observer.observe(pane, { childList: true, subtree: true, characterData: true });
+    return () => observer.disconnect();
+  }, []);
 
   if (!api || !snapshot) {
     return (
@@ -743,6 +797,15 @@ export default function App() {
   };
 
   const handleSelectSession = (target: { workspaceId: string; sessionId: string }) => {
+    // Close diff panel when switching sessions
+    if (showDiffPanel) {
+      setShowDiffPanel(false);
+      changedFiles.setSelectedFile(null);
+      if (sidebarCollapsedBeforeDiffRef.current === false) {
+        setSidebarCollapsed(false);
+      }
+      sidebarCollapsedBeforeDiffRef.current = null;
+    }
     void updateSnapshot(api, setSnapshot, () => api.selectSession(target)).then(() => {
       focusComposer();
     });
@@ -1004,9 +1067,14 @@ export default function App() {
         onUnarchiveSession={handleUnarchiveSession}
         collapsed={sidebarCollapsed}
         onToggleCollapse={() => setSidebarCollapsed((prev) => !prev)}
+        changedFiles={changedFiles.files}
+        hasGit={changedFiles.hasGit}
+        onOpenFileDiff={openDiffForFile}
+        onStageFile={changedFiles.handleStage}
+        onDiscardFile={changedFiles.handleDiscard}
       />
 
-      <main className={`main ${showDiffPanel ? "main--with-diff" : ""}`}>
+      <main className={`main ${showDiffPanel ? "main--diff-fullscreen" : ""}`}>
         <Topbar
           activeView={snapshot.activeView}
           rootWorkspace={rootWorkspace}
@@ -1021,12 +1089,24 @@ export default function App() {
           setSnapshot={setSnapshot}
           updateSnapshot={updateSnapshot}
           showDiffPanel={showDiffPanel}
-          onToggleDiffPanel={() => setShowDiffPanel((prev) => !prev)}
+          onToggleDiffPanel={toggleDiffPanel}
           themeMode={themeMode}
           onToggleTheme={() => handleSetThemeMode(themeMode === "dark" ? "light" : "dark")}
         />
 
-        {snapshot.activeView === "new-thread" ? (
+        {showDiffPanel && selectedWorkspace ? (
+          <DiffPanel
+            selectedFile={changedFiles.selectedFile}
+            diffText={changedFiles.diffText}
+            hasGit={changedFiles.hasGit}
+            loading={changedFiles.loading}
+            hasFiles={changedFiles.files.length > 0}
+            onRefresh={changedFiles.refresh}
+            onStage={changedFiles.handleStage}
+            onDiscard={changedFiles.handleDiscard}
+            onClose={toggleDiffPanel}
+          />
+        ) : snapshot.activeView === "new-thread" ? (
           rootWorkspaceOptions.length > 0 ? (
             <NewThreadView
               workspaces={rootWorkspaceOptions}
@@ -1099,7 +1179,7 @@ export default function App() {
                       <div className="timeline-empty">Send a prompt to start the session.</div>
                     ) : (
                       selectedSession.transcript.map((item) => (
-                        <TimelineItem item={item} key={item.id} />
+                        <TimelineItem item={item} key={item.id} onOpenFileDiff={openDiffForFile} />
                       ))
                     )}
                   </div>
@@ -1181,15 +1261,6 @@ export default function App() {
             </div>
           </section>
         )}
-
-        {showDiffPanel && selectedWorkspace ? (
-          <DiffPanel
-            workspaceId={selectedWorkspace.id}
-            api={api}
-            sessionStatus={selectedSession?.status}
-            transcript={selectedSession?.transcript ?? []}
-          />
-        ) : null}
       </main>
     </div>
   );

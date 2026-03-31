@@ -7,8 +7,10 @@ import { ChevronRightIcon, CopyIcon } from "./icons";
 
 export function TimelineItem({
   item,
+  onOpenFileDiff,
 }: {
   readonly item: TranscriptMessage;
+  readonly onOpenFileDiff?: (filePath: string) => void;
 }) {
   switch (item.kind) {
     case "message":
@@ -16,7 +18,7 @@ export function TimelineItem({
     case "activity":
       return <TimelineActivityItem item={item} />;
     case "tool":
-      return <TimelineToolCallItem item={item} />;
+      return <TimelineToolCallItem item={item} onOpenFileDiff={onOpenFileDiff} />;
     case "summary":
       return <TimelineSummaryItem item={item} />;
     default:
@@ -64,16 +66,24 @@ function TimelineActivityItem({ item }: { readonly item: TimelineActivity }) {
   );
 }
 
-function TimelineToolCallItem({ item }: { readonly item: TimelineToolCall }) {
+function TimelineToolCallItem({ item, onOpenFileDiff }: { readonly item: TimelineToolCall; readonly onOpenFileDiff?: (filePath: string) => void }) {
   const [expanded, setExpanded] = useState(false);
   const hasContent = item.input !== undefined || item.output !== undefined;
   const diffText = isWriteTool(item.toolName) ? extractDiffFromOutput(item.output) : undefined;
   const diffStats = diffText ? countDiffStats(diffText) : undefined;
   const compactLabel = buildCompactLabel(item, diffStats);
+  const filename = extractFilename(item.input);
 
   const handleCopy = () => {
     const text = diffText ?? formatToolContent(item.input, item.output);
     void navigator.clipboard.writeText(text);
+  };
+
+  const handleOpenDiff = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onOpenFileDiff && filename) {
+      onOpenFileDiff(filename);
+    }
   };
 
   return (
@@ -98,6 +108,16 @@ function TimelineToolCallItem({ item }: { readonly item: TimelineToolCall }) {
             <span className="timeline-tool__stat-del">-{diffStats.removed}</span>
           </span>
         ) : null}
+        {isWriteTool(item.toolName) && filename && onOpenFileDiff ? (
+          <button
+            className="timeline-tool__open-diff-btn"
+            type="button"
+            onClick={handleOpenDiff}
+            title="Open full diff"
+          >
+            View Diff
+          </button>
+        ) : null}
         <span className="timeline-tool__meta-inline">{`${item.toolName} \u00b7 ${statusLabel(item.status)}`}</span>
       </button>
       {expanded && hasContent ? (
@@ -105,8 +125,13 @@ function TimelineToolCallItem({ item }: { readonly item: TimelineToolCall }) {
           {diffText ? (
             <>
               <div className="timeline-tool__diff-header">
-                <span className="timeline-tool__diff-filename">
-                  {extractFilename(item.input)}
+                <span
+                  className={`timeline-tool__diff-filename ${onOpenFileDiff ? "timeline-tool__diff-filename--clickable" : ""}`}
+                  onClick={onOpenFileDiff && filename ? handleOpenDiff : undefined}
+                  role={onOpenFileDiff ? "button" : undefined}
+                  tabIndex={onOpenFileDiff ? 0 : undefined}
+                >
+                  {filename}
                   {diffStats ? (
                     <span className="timeline-tool__diff-stats">
                       {" "}<span className="timeline-tool__stat-add">+{diffStats.added}</span>
