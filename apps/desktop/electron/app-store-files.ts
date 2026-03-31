@@ -1,4 +1,11 @@
 import { execFile } from "node:child_process";
+import { readdir } from "node:fs/promises";
+import { join } from "node:path";
+
+export interface DirectoryEntry {
+  readonly name: string;
+  readonly type: "file" | "directory";
+}
 
 const fileCache = new Map<string, { files: string[]; timestamp: number }>();
 const CACHE_TTL_MS = 30_000;
@@ -36,4 +43,28 @@ export function listWorkspaceFiles(workspacePath: string): Promise<string[]> {
       },
     );
   });
+}
+
+const IGNORED_NAMES = new Set([
+  "node_modules", ".git", "__pycache__", ".venv", "venv",
+  ".next", "dist", "build", ".cache", ".turbo",
+]);
+
+export async function listDirectory(
+  workspacePath: string,
+  relativePath?: string,
+): Promise<DirectoryEntry[]> {
+  const targetDir = relativePath ? join(workspacePath, relativePath) : workspacePath;
+  const entries = await readdir(targetDir, { withFileTypes: true });
+
+  return entries
+    .filter((e) => !e.name.startsWith(".") && !IGNORED_NAMES.has(e.name))
+    .map((e) => ({
+      name: e.name,
+      type: (e.isDirectory() ? "directory" : "file") as "directory" | "file",
+    }))
+    .sort((a, b) => {
+      if (a.type !== b.type) return a.type === "directory" ? -1 : 1;
+      return a.name.localeCompare(b.name);
+    });
 }
