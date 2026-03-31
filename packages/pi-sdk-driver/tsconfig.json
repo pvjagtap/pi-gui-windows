@@ -4,6 +4,7 @@
     "lib": ["ES2022"],
     "types": ["node"],
     "composite": false,
+    "strict": true,
     "exactOptionalPropertyTypes": true,
     "noUncheckedIndexedAccess": true,
     "forceConsistentCasingInFileNames": true,
