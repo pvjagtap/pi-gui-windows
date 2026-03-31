@@ -253,10 +253,10 @@ export function MoonIcon() {
   return (
     <Icon>
       <path
-        d="M14.3 11.5A5.5 5.5 0 0 1 8.5 5.7a5.5 5.5 0 1 0 5.8 5.8Z"
+        d="M15.1 12.5a6 6 0 0 1-7.6-7.6A6 6 0 1 0 15.1 12.5Z"
         stroke="currentColor"
         strokeLinejoin="round"
-        strokeWidth="1.4"
+        strokeWidth="1.5"
         fill="none"
       />
     </Icon>

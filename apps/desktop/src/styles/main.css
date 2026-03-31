@@ -110,6 +110,16 @@
   color: var(--muted-soft);
 }
 
+.topbar__icon--theme {
+  border: 1.5px solid var(--muted-soft);
+  border-radius: 8px;
+}
+
+.topbar__icon--theme svg {
+  width: 18px;
+  height: 18px;
+}
+
 .canvas {
   padding: 20px 28px 0;
   overflow: auto;

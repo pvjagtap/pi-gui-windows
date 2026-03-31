@@ -523,8 +523,7 @@ export default function App() {
     lastTranscriptMarkerRef.current = marker;
 
     if (pinnedToBottomRef.current) {
-      pane.scrollTop = pane.scrollHeight;
-      setShowJumpToLatest(false);
+    pane.scrollTo({ top: pane.scrollHeight, behavior: "instant" });
       return;
     }
 
@@ -538,7 +537,7 @@ export default function App() {
 
     const observer = new MutationObserver(() => {
       if (pinnedToBottomRef.current) {
-        pane.scrollTop = pane.scrollHeight;
+        pane.scrollTo({ top: pane.scrollHeight, behavior: "instant" });
       }
     });
 
@@ -881,7 +880,7 @@ export default function App() {
       return;
     }
 
-    pane.scrollTop = pane.scrollHeight;
+    pane.scrollTo({ top: pane.scrollHeight, behavior: "instant" });
     pinnedToBottomRef.current = true;
     setShowJumpToLatest(false);
   };

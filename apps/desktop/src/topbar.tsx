@@ -1,6 +1,6 @@
 import type { MouseEvent as ReactMouseEvent, Dispatch, SetStateAction } from "react";
 import type { AppView, DesktopAppState, SessionRecord, WorkspaceRecord, WorktreeRecord } from "./desktop-state";
-import { DiffIcon, FolderIcon, SunIcon, MoonIcon } from "./icons";
+import { SunIcon, MoonIcon } from "./icons";
 import type { PiDesktopApi } from "./ipc";
 import type { WorkspaceMenuState } from "./hooks/use-workspace-menu";
 
@@ -39,10 +39,6 @@ export function Topbar(props: TopbarProps) {
     workspaces,
     wsMenu,
     api,
-    setSnapshot,
-    updateSnapshot,
-    showDiffPanel,
-    onToggleDiffPanel,
     themeMode,
     onToggleTheme,
   } = props;
@@ -131,29 +127,11 @@ export function Topbar(props: TopbarProps) {
       <div className="topbar__actions">
         <button
           aria-label={themeMode === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-          className="icon-button topbar__icon"
+          className="icon-button topbar__icon topbar__icon--theme"
           type="button"
           onClick={onToggleTheme}
         >
           {themeMode === "dark" ? <SunIcon /> : <MoonIcon />}
-        </button>
-        <button
-          aria-label="Toggle diff panel"
-          className={`icon-button topbar__icon ${showDiffPanel ? "icon-button--active" : ""}`}
-          type="button"
-          onClick={onToggleDiffPanel}
-        >
-          <DiffIcon />
-        </button>
-        <button
-          aria-label="Add folder"
-          className="icon-button topbar__icon"
-          type="button"
-          onClick={() => {
-            void updateSnapshot(api, setSnapshot, () => api.pickWorkspace());
-          }}
-        >
-          <FolderIcon />
         </button>
       </div>
     </header>

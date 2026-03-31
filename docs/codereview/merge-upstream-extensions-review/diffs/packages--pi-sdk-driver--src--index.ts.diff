@@ -1,0 +1,15 @@
+diff --git a/packages/pi-sdk-driver/src/index.ts b/packages/pi-sdk-driver/src/index.ts
+index d71ed4b..c5cb62c 100644
+--- a/packages/pi-sdk-driver/src/index.ts
++++ b/packages/pi-sdk-driver/src/index.ts
+@@ -1,4 +1,10 @@
+ export { JsonCatalogStore } from "./json-catalog-store.js";
++export {
++  applyHostUiRequestToExtensionUiState,
++  createEmptyExtensionUiState,
++  isExtensionUiDialogRequest,
++} from "./extension-ui-state.js";
++export type { ExtensionUiDialogRequest, ExtensionUiState, ExtensionUiWidgetState } from "./extension-ui-state.js";
+ export type { PiSdkDriverConfig } from "./pi-sdk-driver.js";
+ export { createPiSdkDriver, PiSdkDriver } from "./pi-sdk-driver.js";
+ export { RuntimeSupervisor } from "./runtime-supervisor.js";

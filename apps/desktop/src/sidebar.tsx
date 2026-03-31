@@ -107,23 +107,14 @@ export function Sidebar(props: SidebarProps) {
         </div>
         <div className="sidebar__top-row">
           <button
-            className="sidebar__new"
-            type="button"
-            disabled={!selectedWorkspace}
-            onClick={onNewThread}
-          >
-            <PlusIcon />
-            <span>New thread</span>
-          </button>
-          <button
-            aria-label="Open folder"
-            className="icon-button"
+            className="sidebar__open-workspace"
             type="button"
             onClick={() => {
               void updateSnapshot(api, setSnapshot, () => api.pickWorkspace());
             }}
           >
             <FolderIcon />
+            <span>Open workspace</span>
           </button>
         </div>
 
@@ -173,41 +164,51 @@ export function Sidebar(props: SidebarProps) {
               <span className="sidebar__badge">{changedFiles.length}</span>
             </button>
           ) : null}
-        </div>
 
-        {filesExpanded && changedFiles.length > 0 ? (
-          <div className="sidebar__files-list">
-            {changedFiles.map((file) => (
-              <div className="sidebar__file-row" key={file.path}>
-                <button
-                  className="sidebar__file-name"
-                  type="button"
-                  onClick={() => onOpenFileDiff(file.path)}
-                  title={file.path}
-                >
-                  <span className={`diff-panel__status-dot diff-panel__status-dot--${file.status}`} />
-                  <span>{shortenPath(file.path)}</span>
-                </button>
-                {hasGit ? (
-                  <span className="sidebar__file-actions">
-                    <button
-                      className="diff-action-sm diff-action-sm--accept"
-                      type="button"
-                      title="Accept"
-                      onClick={() => onStageFile(file.path)}
-                    >✓</button>
-                    <button
-                      className="diff-action-sm diff-action-sm--reject"
-                      type="button"
-                      title="Reject"
-                      onClick={() => onDiscardFile(file.path)}
-                    >✗</button>
-                  </span>
-                ) : null}
-              </div>
-            ))}
-          </div>
-        ) : null}
+          {filesExpanded && changedFiles.length > 0 ? (
+            <div className="sidebar__files-list">
+              {changedFiles.map((file) => (
+                <div className="sidebar__file-row" key={file.path}>
+                  <button
+                    className="sidebar__file-name"
+                    type="button"
+                    onClick={() => onOpenFileDiff(file.path)}
+                    title={file.path}
+                  >
+                    <span className={`diff-panel__status-dot diff-panel__status-dot--${file.status}`} />
+                    <span>{shortenPath(file.path)}</span>
+                  </button>
+                  {hasGit ? (
+                    <span className="sidebar__file-actions">
+                      <button
+                        className="diff-action-sm diff-action-sm--accept"
+                        type="button"
+                        title="Accept"
+                        onClick={() => onStageFile(file.path)}
+                      >✓</button>
+                      <button
+                        className="diff-action-sm diff-action-sm--reject"
+                        type="button"
+                        title="Reject"
+                        onClick={() => onDiscardFile(file.path)}
+                      >✗</button>
+                    </span>
+                  ) : null}
+                </div>
+              ))}
+            </div>
+          ) : null}
+
+          <button
+            className="sidebar__new"
+            type="button"
+            disabled={!selectedWorkspace}
+            onClick={onNewThread}
+          >
+            <PlusIcon />
+            <span>New thread</span>
+          </button>
+        </div>
 
         {explorerExpanded && selectedWorkspace ? (
           <FileExplorer

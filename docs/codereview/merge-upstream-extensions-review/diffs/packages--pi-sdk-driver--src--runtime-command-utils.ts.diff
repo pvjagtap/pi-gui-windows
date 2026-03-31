@@ -1,0 +1,17 @@
+diff --git a/packages/pi-sdk-driver/src/runtime-command-utils.ts b/packages/pi-sdk-driver/src/runtime-command-utils.ts
+new file mode 100644
+index 0000000..de9a473
+--- /dev/null
++++ b/packages/pi-sdk-driver/src/runtime-command-utils.ts
+@@ -0,0 +1,11 @@
++export function normalizeRuntimeCommandName(value: string): string {
++  return value.trim().replace(/^\/+/, "");
++}
++
++export function skillCommandName(name: string): string {
++  return `skill:${normalizeRuntimeCommandName(name)}`;
++}
++
++export function skillSlashCommand(name: string): string {
++  return `/${skillCommandName(name)}`;
++}
